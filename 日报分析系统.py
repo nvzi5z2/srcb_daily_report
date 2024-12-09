@@ -2,9 +2,9 @@ import pandas as pd
 import numpy as np
 import os
 
-result_path=r'C:\Users\Wesle\Desktop\日报分析\result'
+result_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\result'
 
-data_path=r'C:\Users\Wesle\Desktop\日报分析\原始数据'
+data_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\原始数据'
 
 department_list='员工部门归属表.xlsx'
 
@@ -30,19 +30,19 @@ department_list,client_manager_data,T0_Date,result_path):
 
     daily_report=yesterday_daily_report_df.iloc[1:45,2:]
 
-    data.index=index_list
+    daily_report.index=index_list
 
-    data.columns=new_columns
+    daily_report.columns=new_columns
 
     #第一个结果（指标）提取昨日报表指标列
-    kpi=data[['指标']]
+    kpi=daily_report[['指标']]
 
     kpi.columns=['鑫e贷总授信_指标','鑫e贷放款_指标','鑫e贷授信-B款_指标']
 
     kpi_result=kpi[['鑫e贷总授信_指标']]
     
     #第二个结果（昨日完成数），提取完成数的列表
-    yesterday_finished=data[['完成数']]
+    yesterday_finished=daily_report[['完成数']]
 
     yesterday_finished.columns=['鑫e贷总授信_昨日完成数','鑫e贷放款_昨日完成数','鑫e贷授信-B款_昨日完成数']
 
@@ -66,7 +66,7 @@ department_list,client_manager_data,T0_Date,result_path):
     department_df.rename(columns={'员工姓名': 'kehujinglixingm', '部门': 'department'}, inplace=True)
 
     # 合并客户经理业绩数据和部门数据
-    merged_df = total_shouxin.reset_index().merge(department_df, on='kehujinglixingm', how='left')
+    merged_df = manager_total_shouxin.reset_index().merge(department_df, on='kehujinglixingm', how='left')
     
     # 按部门分组，计算业绩总和
     department_totals =  merged_df.groupby('department', as_index=False)['benyueshouxinrenshu'].sum()
@@ -81,7 +81,7 @@ department_list,client_manager_data,T0_Date,result_path):
 
     #提取昨日协同外拓数
 
-    yesterday_retail_performance=data[['协同外拓']]
+    yesterday_retail_performance=daily_report[['协同外拓']]
 
     yesterday_retail_performance.columns=['鑫e贷总授信_昨日协同外拓','鑫e贷放款_昨日协同外拓','鑫e贷授信-B款_昨日协同外拓']
 
@@ -129,11 +129,11 @@ department_list,client_manager_data,T0_Date,result_path):
                             '鑫e贷总授信_报表数','鑫e贷总授信_协同外拓','B款月底额外计1户授信','数据调整数',
                                 '鑫e贷总授信_完成数','鑫e贷总授信_完成率']]
 
-    result.to_excel(result_path+'\\'+'鑫e贷总授信完成情况.xlsx')
+    final_result.to_excel(result_path+'\\'+'鑫e贷总授信完成情况.xlsx')
 
     print('恭喜米，鑫e贷总授信计算完成')
 
-    return result
+    return final_result
 
 
 XY_Dai_Zong_Shou_Xin_result=XY_Dai_Zong_Shou_Xin(data_path,yesterday_daily_report,
