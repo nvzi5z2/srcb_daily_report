@@ -3,17 +3,11 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
-<<<<<<< HEAD
+#数据路径设置
+
 result_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\result'
 
 data_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\原始数据'
-=======
-#数据路径设置
-
-result_path=r'D:\srcb_daily_report\result'
->>>>>>> origin/main
-
-data_path=r'D:\srcb_daily_report\原始数据'
 
 #部门归属表文件名
 department_list='员工部门归属表.xlsx'
@@ -38,7 +32,7 @@ def plot_setting():
     plt.rcParams['axes.unicode_minus'] = False   # 正常显示负号
 
 
-plot_setting()
+
 
 def XY_Dai_Zong_Shou_Xin(data_path,yesterday_daily_report,
 department_list,client_manager_data,T0_Date,result_path):
@@ -158,8 +152,6 @@ department_list,client_manager_data,T0_Date,result_path):
     print('恭喜米，鑫e贷总授信计算完成')
 
     return final_result
-<<<<<<< HEAD
-=======
 
 
 def XY_Dai_Fang_Kuang(data_path,yesterday_daily_report,
@@ -288,28 +280,20 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
     final_result=result[['鑫e贷放款_指标','鑫e贷放款_昨日完成数(轧差)',
                         '鑫e贷放款_报表数','鑫e贷放款_自然流量','鑫e贷放款_协同外拓','鑫e贷放款_完成数',
                             '鑫e贷放款_完成率']]
-    final_result.sort_values('鑫e贷放款_完成率', ascending=True)[['鑫e贷放款_完成率']].plot(
-        kind='barh', 
-        figsize=(10, 15)
-    )
-    plt.title('团队KPI完成率对比', fontsize=14)
-    plt.tight_layout()
-    plt.show()
+                            
+    # final_result.sort_values('鑫e贷放款_完成率', ascending=True)[['鑫e贷放款_完成率']].plot(
+    #     kind='barh', 
+    #     figsize=(10, 15)
+    # )
+    # plt.title('团队KPI完成率对比', fontsize=14)
+    # plt.tight_layout()
+    # plt.show()
 
     final_result.to_excel(result_path+'\\'+'鑫e贷放款完成情况.xlsx')
     
     print('恭喜米，鑫e贷放款计算完成')
 
     return final_result
->>>>>>> origin/main
-
-
-XY_Dai_Zong_Shou_Xin_result=XY_Dai_Zong_Shou_Xin(data_path,yesterday_daily_report,
-department_list,client_manager_data,T0_Date,result_path)
-
-
-XY_Dai_Fang_Kuang_result=XY_Dai_Fang_Kuang(data_path,yesterday_daily_report,
-department_list,client_manager_data,T0_Date,type_B_data,result_path)
 
 
 def B_Kuang_Shou_Xin(data_path,yesterday_daily_report,
@@ -358,17 +342,20 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
     DD_time=filtered_df[['jingdiaokehujingli']]
 
     DD_result = DD_time['jingdiaokehujingli'].value_counts().reset_index()
-
-    DD_result=DD_result.set_index('jingdiaokehujingli')
-
+    
+    DD_result=DD_result.set_index('index',drop=True
+    )
     department_df=pd.read_excel(data_path+'\\'+department_list)
 
     # 重命名列，确保列名一致，便于匹配
     department_df.rename(columns={'员工姓名': 'jingdiaokehujingli', '部门': 'department'}, inplace=True)
 
+    department_df=department_df.set_index('jingdiaokehujingli',drop=True)
+
     # 合并客户经理业绩数据和部门数据
-    merged_df = DD_result.reset_index().merge(department_df, on='jingdiaokehujingli', how='left')
+    merged_df =pd.merge(DD_result,department_df,right_index=True,left_index=True)
     
+    merged_df.columns=['count','department']
     # 按部门分组，计算业绩总和
     department_totals =  merged_df.groupby('department', as_index=False)['count'].sum()
 
@@ -378,6 +365,7 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     result.loc[:,"鑫e贷授信-B款_报表数"]=department_totals
 
+
     #第三个结果（协同外拓）
 
     yesterday_retail_performance=daily_report[['协同外拓']]
@@ -386,7 +374,6 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     yesterday_retail_performance=yesterday_retail_performance[['鑫e贷授信-B款_昨日协同外拓']]
 
-    #写到了这里
     
     retail_performance_df=pd.read_excel(data_path+'\\'+retail_performance_data)
 
@@ -398,17 +385,53 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     today_retail_df=today_retail_df[['客户经理姓名','协同外拓网点','其中本人\nA款授信（户）','其中本人\nB款授信（户）']]
 
-    today_retail_df.loc[:,"鑫e贷总授信_今日协同外拓"]=today_retail_df.loc[:,"其中本人\nA款授信（户）"]+today_retail_df.loc[:,"其中本人\nB款授信（户）"]*2
+    today_retail_df.loc[:,"鑫e贷授信-B款_今日协同外拓"]=today_retail_df.loc[:,"其中本人\nB款授信（户）"]
     
-    today_retail_result=today_retail_df[['协同外拓网点','鑫e贷总授信_今日协同外拓']]
+    today_retail_result=today_retail_df[['协同外拓网点','鑫e贷授信-B款_今日协同外拓']]
 
     today_retail_result=today_retail_result.set_index('协同外拓网点',drop=True)
 
     newest_result=pd.concat([yesterday_retail_performance,today_retail_result],axis=1)
 
-    newest_result.loc[:, "鑫e贷总授信_协同外拓"] = (
-        newest_result.loc[:, "鑫e贷总授信_昨日协同外拓"].fillna(0) +
-        newest_result.loc[:, "鑫e贷总授信_今日协同外拓"].fillna(0)
+    newest_result.loc[:, "鑫e贷授信-B款_协同外拓"] = (
+        newest_result.loc[:, "鑫e贷授信-B款_昨日协同外拓"].fillna(0) +
+        newest_result.loc[:, "鑫e贷授信-B款_今日协同外拓"].fillna(0)
         )
 
-        result.loc[:,"鑫e贷总授信_协同外拓"]=newest_result.loc[:, "鑫e贷总授信_协同外拓"]
+    result.loc[:,"鑫e贷授信-B款_协同外拓"]=newest_result.loc[:, "鑫e贷授信-B款_协同外拓"]
+
+    #第四个结果（调整数）
+
+    result.loc[:,"鑫e贷授信-B款_调整数"]=0
+
+    #第五个结果（完成数）
+
+    result.loc[:,"鑫e贷授信-B款_完成数"]=result[['鑫e贷授信-B款_报表数','鑫e贷授信-B款_协同外拓',
+                                '鑫e贷授信-B款_调整数']].sum(axis=1)
+
+    result.loc[:, "鑫e贷授信-B款_完成率"] = (result.loc[:, "鑫e贷授信-B款_完成数"] /
+                             result.loc[:, "鑫e贷授信-B款_指标"]).fillna(0).round(2)
+                                   
+    result.to_excel(result_path+'\\'+'鑫e贷授信-B款完成情况.xlsx')
+
+    print('恭喜米，鑫e贷授信-B款计算完成')
+
+    return result
+
+
+plot_setting()
+
+XY_Dai_Zong_Shou_Xin_result=XY_Dai_Zong_Shou_Xin(data_path,yesterday_daily_report,
+department_list,client_manager_data,T0_Date,result_path)
+
+
+XY_Dai_Fang_Kuang_result=XY_Dai_Fang_Kuang(data_path,yesterday_daily_report,
+department_list,client_manager_data,T0_Date,type_B_data,result_path)
+
+B_Kuang_Shou_Xin_result=B_Kuang_Shou_Xin(data_path,yesterday_daily_report,
+department_list,client_manager_data,T0_Date,type_B_data,result_path)
+
+
+total=pd.concat([XY_Dai_Zong_Shou_Xin_result,XY_Dai_Fang_Kuang_result,B_Kuang_Shou_Xin_result],axis=1)
+
+total.to_excel(result_path+'\\'+'日报总表.xlsx')
