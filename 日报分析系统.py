@@ -1,10 +1,13 @@
 import pandas as pd
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 
-result_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\result'
+#数据路径设置
 
-data_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\原始数据'
+result_path=r'D:\srcb_daily_report\result'
+
+data_path=r'D:\srcb_daily_report\原始数据'
 
 department_list='员工部门归属表.xlsx'
 
@@ -14,7 +17,19 @@ client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2024-12-0
 
 retail_performance_data='零售市场部协同外拓及理财转介业绩报送.xlsx'
 
+type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-08.xlsx'
+
 T0_Date='2024-12-06'
+
+
+
+def plot_setting():
+    # 设置全局字体为支持中文的字体（SimHei 黑体）
+    plt.rcParams['font.sans-serif'] = ['SimHei']  # 用黑体显示中文
+    plt.rcParams['axes.unicode_minus'] = False   # 正常显示负号
+
+
+plot_setting()
 
 def XY_Dai_Zong_Shou_Xin(data_path,yesterday_daily_report,
 department_list,client_manager_data,T0_Date,result_path):
@@ -136,5 +151,152 @@ department_list,client_manager_data,T0_Date,result_path):
     return final_result
 
 
+def XY_Dai_Fang_Kuang(data_path,yesterday_daily_report,
+department_list,client_manager_data,T0_Date,type_B_data,result_path):
+    
+    yesterday_daily_report_df=pd.read_excel(data_path+'\\'+yesterday_daily_report)
+
+    yesterday_daily_report_df=yesterday_daily_report_df.iloc[1:,:]
+
+    new_columns = yesterday_daily_report_df.iloc[0,2:]  # 选择第一行作为新的列名
+
+    index = yesterday_daily_report_df.iloc[1:, 1:2].dropna()  # 假设这是你提取出来的列数据
+    index_list = index.squeeze().tolist()  # 将提取出的列转换为列表
+
+    daily_report=yesterday_daily_report_df.iloc[1:45,2:]
+
+    daily_report.index=index_list
+
+    daily_report.columns=new_columns
+
+    #第一个结果（指标）提取昨日报表指标列
+    kpi=daily_report[['指标']]
+
+    kpi.columns=['鑫e贷总授信_指标','鑫e贷放款_指标','鑫e贷授信-B款_指标']
+
+    kpi_result=kpi[['鑫e贷放款_指标']]
+
+    #第二个结果（昨日完成数），提取完成数的列表
+    yesterday_finished=daily_report[['完成数']]
+
+    yesterday_finished.columns=['鑫e贷总授信_昨日完成数','鑫e贷放款_昨日完成数','鑫e贷授信-B款_昨日完成数']
+
+    yesterday_finished_result=yesterday_finished[['鑫e贷放款_昨日完成数']]
+    
+    result=pd.merge(kpi_result,yesterday_finished_result,right_index=True,left_index=True)
+
+    #第三个结果（报表数）
+
+    client_manager_df=pd.read_excel(data_path+'\\'+client_manager_data)
+
+    client_manager_df=client_manager_df.set_index('kehujinglixingm',drop=True)
+
+    monthly_fangkuan=client_manager_df[['benyuefangkuanjine']]
+    
+    manager_total_fangkuan = monthly_fangkuan.groupby(monthly_fangkuan.index).sum()
+
+    department_df=pd.read_excel(data_path+'\\'+department_list)
+
+    # 重命名列，确保列名一致，便于匹配
+    department_df.rename(columns={'员工姓名': 'kehujinglixingm', '部门': 'department'}, inplace=True)
+
+    # 合并客户经理业绩数据和部门数据
+    merged_df = manager_total_fangkuan.reset_index().merge(department_df, on='kehujinglixingm', how='left')
+    
+    # 按部门分组，计算业绩总和
+    department_totals =  merged_df.groupby('department', as_index=False)['benyuefangkuanjine'].sum()
+
+    department_totals=department_totals.set_index('department',drop=True)
+
+    department_totals=department_totals/10000
+
+    department_totals=department_totals.fillna(0).round(0)
+
+    department_totals.columns=['鑫e贷放款_报表数']
+
+    result.loc[:,"鑫e贷放款_报表数"]=department_totals
+    
+    #第四个结果（自然流量）
+
+    #读取b款数据
+
+    type_B_df=pd.read_excel(data_path+'\\'+type_B_data,sheet_name="鑫e贷大额客户借据数据")
+
+    type_B_df=type_B_df.set_index('fangkuanriq')
+
+    type_B_df.index=pd.to_datetime(type_B_df.index)
+
+    year = pd.to_datetime(T0_Date).year  # 提取年份
+
+    month = pd.to_datetime(T0_Date).month  # 提取月份
+
+    filtered_df = type_B_df[(type_B_df.index.year == year) & (type_B_df.index.month == month)]
+
+    netural_df=filtered_df[['jingdiaokehujingl','yingxiaokehujingl','fangkuanjine']]
+
+    # 筛选出 yingxiaokehujingl 和 jingdiaokehujingl 不相等的行
+
+    netural_df_filtered = netural_df[netural_df['yingxiaokehujingl'] != netural_df['jingdiaokehujingl']]
+
+    netural_result= netural_df_filtered.groupby('jingdiaokehujingl', as_index=False)['fangkuanjine'].sum()
+    
+    netural_result=netural_result.set_index('jingdiaokehujingl',drop=True)
+
+    department_df_1=pd.read_excel(data_path+'\\'+department_list)
+
+    # 重命名列，确保列名一致，便于匹配
+    department_df_1.rename(columns={'员工姓名': 'jingdiaokehujingl', '部门': 'department'}, inplace=True)
+
+    # 合并客户经理业绩数据和部门数据
+    netural_merged_df = netural_result.reset_index().merge(department_df_1, on='jingdiaokehujingl', how='left')
+    
+    netural_department_totals =  netural_merged_df.groupby('department', as_index=False)['fangkuanjine'].sum()
+
+    netural_department_totals=netural_department_totals.set_index('department',drop=True)
+
+    netural_department_totals=netural_department_totals/10000
+
+    netural_department_totals=netural_department_totals.fillna(0).round(2)
+
+    netural_department_totals.columns=['鑫e贷放款_自然流量']
+
+    result.loc[:,"鑫e贷放款_自然流量"]=netural_department_totals
+
+    #第四个指标（协同外拓）
+
+    result.loc[:,"鑫e贷放款_协同外拓"]=0
+
+    result.loc[:,"鑫e贷放款_完成数"]=result[['鑫e贷放款_报表数','鑫e贷放款_自然流量',
+                                '鑫e贷放款_协同外拓']].sum(axis=1)
+
+    result.loc[:, "鑫e贷放款_完成率"] = (result.loc[:, "鑫e贷放款_完成数"] /
+                             result.loc[:, "鑫e贷放款_指标"]).fillna(0).round(2)
+    
+    result.loc[:,"鑫e贷放款_昨日完成数(轧差)"]=result.loc[:,"鑫e贷放款_完成数"]-result.loc[:,"鑫e贷放款_昨日完成数"]
+
+    final_result=result[['鑫e贷放款_指标','鑫e贷放款_昨日完成数(轧差)',
+                        '鑫e贷放款_报表数','鑫e贷放款_自然流量','鑫e贷放款_协同外拓','鑫e贷放款_完成数',
+                            '鑫e贷放款_完成率']]
+    final_result.sort_values('鑫e贷放款_完成率', ascending=True)[['鑫e贷放款_完成率']].plot(
+        kind='barh', 
+        figsize=(10, 15)
+    )
+    plt.title('团队KPI完成率对比', fontsize=14)
+    plt.tight_layout()
+    plt.show()
+
+    final_result.to_excel(result_path+'\\'+'鑫e贷放款完成情况.xlsx')
+    
+    print('恭喜米，鑫e贷放款计算完成')
+
+    return final_result
+
+
 XY_Dai_Zong_Shou_Xin_result=XY_Dai_Zong_Shou_Xin(data_path,yesterday_daily_report,
 department_list,client_manager_data,T0_Date,result_path)
+
+
+XY_Dai_Fang_Kuang_result=XY_Dai_Fang_Kuang(data_path,yesterday_daily_report,
+department_list,client_manager_data,T0_Date,type_B_data,result_path)
+
+
