@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 
 #数据路径设置
 
-result_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\result'
+result_path=r'D:\srcb_daily_report\result'
 
-data_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\原始数据'
+data_path=r'D:\srcb_daily_report\原始数据'
 
 #部门归属表文件名
 department_list='员工部门归属表.xlsx'
@@ -113,6 +113,8 @@ department_list,client_manager_data,T0_Date,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
 
+    today_retail_df=today_retail_df.fillna(0)
+
     today_retail_df=today_retail_df[['客户经理姓名','协同外拓网点','其中本人\nA款授信（户）','其中本人\nB款授信（户）']]
 
     today_retail_df.loc[:,"鑫e贷总授信_今日协同外拓"]=today_retail_df.loc[:,"其中本人\nA款授信（户）"]+today_retail_df.loc[:,"其中本人\nB款授信（户）"]*2
@@ -133,6 +135,8 @@ department_list,client_manager_data,T0_Date,result_path):
     result.loc[:,"B款月底额外计1户授信"]=0
 
     result.loc[:,"数据调整数"]=0
+
+    #完成数
 
     result.loc[:,"鑫e贷总授信_完成数"]=result[['鑫e贷总授信_报表数','鑫e贷总授信_协同外拓',
                                 'B款月底额外计1户授信','数据调整数']].sum(axis=1)
@@ -342,9 +346,11 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
     DD_time=filtered_df[['jingdiaokehujingli']]
 
     DD_result = DD_time['jingdiaokehujingli'].value_counts().reset_index()
+
+    DD_result.columns=['index','count']
     
-    DD_result=DD_result.set_index('index',drop=True
-    )
+    DD_result=DD_result.set_index('index',drop=True)
+
     department_df=pd.read_excel(data_path+'\\'+department_list)
 
     # 重命名列，确保列名一致，便于匹配
@@ -365,7 +371,6 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     result.loc[:,"鑫e贷授信-B款_报表数"]=department_totals
 
-
     #第三个结果（协同外拓）
 
     yesterday_retail_performance=daily_report[['协同外拓']]
@@ -373,7 +378,6 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
     yesterday_retail_performance.columns=['鑫e贷总授信_昨日协同外拓','鑫e贷放款_昨日协同外拓','鑫e贷授信-B款_昨日协同外拓']
 
     yesterday_retail_performance=yesterday_retail_performance[['鑫e贷授信-B款_昨日协同外拓']]
-
     
     retail_performance_df=pd.read_excel(data_path+'\\'+retail_performance_data)
 
@@ -384,8 +388,10 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
     today_retail_df=retail_performance_df.loc[T0_Date,:]
 
     today_retail_df=today_retail_df[['客户经理姓名','协同外拓网点','其中本人\nA款授信（户）','其中本人\nB款授信（户）']]
-
-    today_retail_df.loc[:,"鑫e贷授信-B款_今日协同外拓"]=today_retail_df.loc[:,"其中本人\nB款授信（户）"]
+    
+    today_retail_df=today_retail_df.fillna(0)
+    
+    today_retail_df.loc[:,"鑫e贷授信-B款_今日协同外拓"]=today_retail_df.loc[:,"其中本人\nB款授信（户）"].fillna(0)
     
     today_retail_result=today_retail_df[['协同外拓网点','鑫e贷授信-B款_今日协同外拓']]
 
