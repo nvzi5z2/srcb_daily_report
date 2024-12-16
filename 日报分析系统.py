@@ -13,16 +13,16 @@ data_path=r'D:\srcb_daily_report\原始数据'
 department_list='员工部门归属表.xlsx'
 
 #昨日日报表文件名
-yesterday_daily_report='网点鑫e贷月度指标完成情况1211.xlsx'
+yesterday_daily_report='网点鑫e贷月度指标完成情况1213.xlsx'
 
 #【浦东分行鑫e贷】客户经理营销数据文件名
-client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2024-12-11.xlsx'
+client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2024-12-15.xlsx'
 
 retail_performance_data='零售市场部协同外拓及理财转介业绩报送.xlsx'
 
-type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-11.xlsx'
+type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-15.xlsx'
 
-T0_Date='2024-12-11'
+T0_Date='2024-12-13'
 
 
 
@@ -134,7 +134,11 @@ department_list,client_manager_data,T0_Date,result_path):
 
     result.loc[:,"B款月底额外计1户授信"]=0
 
-    result.loc[:,"数据调整数"]=0
+    #取昨日数据调整数
+
+    yesterday_daily_adjusted=daily_report[['数据调整数']]
+
+    result.loc[:,"数据调整数"]=yesterday_daily_adjusted
 
     #完成数
 
