@@ -13,16 +13,16 @@ data_path=r'D:\srcb_daily_report\原始数据'
 department_list='员工部门归属表.xlsx'
 
 #昨日日报表文件名
-yesterday_daily_report='网点鑫e贷月度指标完成情况1217.xlsx'
+yesterday_daily_report='网点鑫e贷月度指标完成情况1218.xlsx'
 
 #【浦东分行鑫e贷】客户经理营销数据文件名
-client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2024-12-17.xlsx'
+client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2024-12-18.xlsx'
 
-retail_performance_data='零售市场部协同外拓及理财转介业绩报送-4.xlsx'
+retail_performance_data='零售市场部协同外拓及理财转介业绩报送-5.xlsx'
 
-type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-17.xlsx'
+type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-18.xlsx'
 
-T0_Date='2024-12-17'
+T0_Date='2024-12-18'
 
 
 
