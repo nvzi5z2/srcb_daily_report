@@ -5,15 +5,14 @@ import matplotlib.pyplot as plt
 
 #数据路径设置
 
-result_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\result'
+result_path=r'D:\srcb_daily_report\result'
 
-data_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\原始数据'
+data_path=r'D:\srcb_daily_report\原始数据'
 
 #部门归属表文件名
 department_list='员工部门归属表.xlsx'
 
 #昨日日报表文件名
-<<<<<<< Updated upstream
 yesterday_daily_report='网点鑫e贷月度指标完成情况1223.xlsx'
 
 #【浦东分行鑫e贷】客户经理营销数据文件名
@@ -24,18 +23,6 @@ retail_performance_data='零售市场部协同外拓及理财转介业绩报送-
 type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-23.xlsx'
 
 T0_Date='2024-12-23'
-=======
-yesterday_daily_report='网点鑫e贷月度指标完成情况1220.xlsx'
-
-#【浦东分行鑫e贷】客户经理营销数据文件名
-client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2024-12-22.xlsx'
-
-retail_performance_data='零售市场部协同外拓及理财转介业绩报送-6.xlsx'
-
-type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-22.xlsx'
-
-T0_Date='2024-12-22'
->>>>>>> Stashed changes
 
 
 
@@ -126,7 +113,7 @@ department_list,client_manager_data,T0_Date,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
 
-    # today_retail_df = today_retail_df.to_frame().T
+    today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df.fillna(0)
 
@@ -290,7 +277,11 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     #第四个指标（协同外拓）
 
-    result.loc[:,"鑫e贷放款_协同外拓"]=0
+    yesterday_retail_performance=daily_report[['协同外拓']]
+
+    yesterday_retail_performance.columns=['鑫e贷总授信_昨日协同外拓','鑫e贷放款_昨日协同外拓','鑫e贷授信-B款_昨日协同外拓']
+
+    result.loc[:,"鑫e贷放款_协同外拓"]=yesterday_retail_performance[['鑫e贷放款_昨日协同外拓']]
 
     result.loc[:,"鑫e贷放款_完成数"]=result[['鑫e贷放款_报表数','鑫e贷放款_自然流量',
                                 '鑫e贷放款_协同外拓']].sum(axis=1)
@@ -406,7 +397,7 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
     
-    # today_retail_df = today_retail_df.to_frame().T
+    today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df[['客户经理姓名','协同外拓网点','其中本人\nA款授信（户）','其中本人\nB款授信（户）']]
     
