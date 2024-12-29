@@ -630,7 +630,7 @@ department_list,client_manager_data,T0_Date,result_path):
 
     manager_total_shouxin = monthly_shouxin.groupby(monthly_shouxin.index).sum()
 
-    result.loc[:,"鑫e贷总授信（A/B款）_报表数"]=manager_total_shouxin
+    result.loc[:,"鑫e贷总授信（A/B款）_报表完成数"]=manager_total_shouxin
 
 
     #第四个结果(外拓双算数)
@@ -684,43 +684,55 @@ department_list,client_manager_data,T0_Date,result_path):
 
     filtered_df = type_B_df[(type_B_df.index.year == year) & (type_B_df.index.month == month)]
 
-
-    #这个地方有bug！！！！！！！！！！！！！！！！！！！！！！！！
-    #没有放款金额
-    netural_df=filtered_df[['jingdiaokehujingli','yingxiaokehujingl','fangkuanjine']]
+    netural_df=filtered_df[['jingdiaokehujingli','yingxiaokehujingl']]
 
     # 筛选出 yingxiaokehujingl 和 jingdiaokehujingl 不相等的行
 
-    netural_df_filtered = netural_df[netural_df['yingxiaokehujingl'] != netural_df['jingdiaokehujingl']]
-
-    netural_result= netural_df_filtered.groupby('jingdiaokehujingl', as_index=False)['fangkuanjine'].sum()
+    netural_df_filtered = netural_df[netural_df['yingxiaokehujingl'] != netural_df['jingdiaokehujingli']]
     
-    netural_result=netural_result.set_index('jingdiaokehujingl',drop=True)
+    netural_result = netural_df_filtered['jingdiaokehujingli'].value_counts().reset_index()
 
-    result.loc[:,"鑫e贷放款_自然流量完成数"]=netural_result
+    netural_result=netural_result.set_index('index',drop=True)
 
-    result.loc[:,"鑫e贷放款_自然流量完成数"]=result.loc[:,"鑫e贷放款_自然流量完成数"]/10000
+    netural_result.columns=['鑫e贷总授信（A/B款）_自然流量']
 
+    result.loc[:,"鑫e贷总授信（A/B款）_自然流量"]=netural_result
 
+    #第六个指标（调整数）
 
-    #完成数
+    adjust_number=daily_report[['调整数']]
 
-    result.loc[:,"鑫e贷总授信_完成数"]=result[['鑫e贷总授信_报表数','鑫e贷总授信_协同外拓',
-                                'B款月底额外计1户授信','数据调整数']].sum(axis=1)
-    # 计算完成率（完成数 / 指标），保留小数点后两位
-    result.loc[:, "鑫e贷总授信_完成率"] = (
-        result.loc[:, "鑫e贷总授信_完成数"] / result.loc[:, "鑫e贷总授信_指标"]
-    ).fillna(0).round(2)
+    adjust_number.columns=['鑫e贷放款_调整数','鑫e贷总授信（A/B款）_调整数','鑫e贷授信-B款_调整数']
+
+    adjust_number_result=adjust_number[['鑫e贷总授信（A/B款）_调整数']]
+
+    result.loc[:,"鑫e贷总授信（A/B款）_调整数"]=adjust_number_result
+
+    #第七个指标（本月）
+
+    #计算本月和昨日轧差
+
+    result=result.fillna(0)
+    result.loc[:,"鑫e贷总授信（A/B款）_本月"]=result.loc[:,"鑫e贷总授信（A/B款）_报表完成数":"鑫e贷总授信（A/B款）_调整数"].sum(axis=1)
     
-    result.loc[:,"鑫e贷总授信_昨日完成数(轧差)"]=result.loc[:,"鑫e贷总授信_完成数"]-result.loc[:,"鑫e贷总授信_昨日完成数"]
+    result.loc[:,"鑫e贷总授信（A/B款）_昨日完成数(轧差)"]=result.loc[:,"鑫e贷总授信（A/B款）_本月"]-result.loc[:,"鑫e贷总授信（A/B款）_昨日本月"]
 
-    final_result=result[['鑫e贷总授信_指标','鑫e贷总授信_昨日完成数(轧差)',
-                            '鑫e贷总授信_报表数','鑫e贷总授信_协同外拓','B款月底额外计1户授信','数据调整数',
-                                '鑫e贷总授信_完成数','鑫e贷总授信_完成率']]
+    #八个指标（完成率）
 
-    final_result.to_excel(result_path+'\\'+'鑫e贷总授信完成情况.xlsx')
+    #先将指标中带有“-”转换为NaN值
 
-    print('恭喜米，鑫e贷总授信计算完成')
+    result['鑫e贷总授信（A/B款）_指标'] = pd.to_numeric(result['鑫e贷总授信（A/B款）_指标'], errors='coerce')
+
+
+    result.loc[:,"鑫e贷总授信（A/B款）_完成率"]=result.loc[:,"鑫e贷总授信（A/B款）_本月"]/result.loc[:,"鑫e贷总授信（A/B款）_指标"]
+    #
+    final_result=result[['鑫e贷总授信（A/B款）_指标','鑫e贷总授信（A/B款）_昨日完成数(轧差)',
+                        '鑫e贷总授信（A/B款）_报表完成数','鑫e贷总授信（A/B款）_外拓双算数','鑫e贷总授信（A/B款）_自然流量','鑫e贷总授信（A/B款）_调整数',
+                            '鑫e贷总授信（A/B款）_本月','鑫e贷总授信（A/B款）_完成率']]
+
+    final_result.to_excel(result_path+'\\'+'团队_鑫e贷总授信完成情况.xlsx')
+    
+    print('恭喜米，团队_鑫e贷总授信计算完成')
 
     return final_result
 
@@ -912,4 +924,17 @@ def WM_Bussiness_Number_Team(data_path,yesterday_team_report,retail_performance_
     return result
 
 
+XY_Dai_Fang_Kuang_Team=XY_Dai_Fang_Kuang_Team(data_path,yesterday_team_report,
+department_list,client_manager_data,T0_Date,type_B_data,result_path)
 
+XY_Dai_Zong_Shou_Xin_Team=XY_Dai_Zong_Shou_Xin_Team(data_path,yesterday_team_report,
+department_list,client_manager_data,T0_Date,result_path)
+
+B_Kuang_Shou_Xin_Team=B_Kuang_Shou_Xin_Team(data_path,yesterday_team_report,
+department_list,client_manager_data,T0_Date,type_B_data,result_path)
+
+WM_Bussiness_Number_Team= WM_Bussiness_Number_Team(data_path,yesterday_team_report,retail_performance_data)
+
+total_team=pd.concat([XY_Dai_Fang_Kuang_Team,XY_Dai_Zong_Shou_Xin_Team,B_Kuang_Shou_Xin_Team,WM_Bussiness_Number_Team],axis=1)
+
+total_team.to_excel(result_path+'\\'+'团队日报总表.xlsx')
