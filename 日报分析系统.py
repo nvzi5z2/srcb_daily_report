@@ -5,26 +5,26 @@ import matplotlib.pyplot as plt
 
 #数据路径设置
 
-result_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\result'
+result_path=r'D:\srcb_daily_report\result'
 
-data_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\原始数据'
+data_path=r'D:\srcb_daily_report\原始数据'
 
 #部门归属表文件名
 department_list='员工部门归属表.xlsx'
 
 #昨日日报表文件名
-yesterday_daily_report='网点鑫e贷月度指标完成情况1226.xlsx'
+yesterday_daily_report='网点鑫e贷月度指标完成情况1229.xlsx'
 
-yesterday_team_report='团队非按揭业绩日报20241218.xlsx'
+yesterday_team_report='团队非按揭业绩日报1227.xlsx'
 
 #【浦东分行鑫e贷】客户经理营销数据文件名
-client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2024-12-18.xlsx'
+client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2024-12-29.xlsx'
 
-retail_performance_data='零售市场部协同外拓及理财转介业绩报送-5.xlsx'
+retail_performance_data='零售市场部协同外拓及理财转介业绩报送-10.xlsx'
 
-type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-18.xlsx'
+type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-29.xlsx'
 
-T0_Date='2024-12-18'
+T0_Date='2024-12-27'
 
 
 #网点鑫e贷月度指标完成情况
@@ -109,7 +109,7 @@ department_list,client_manager_data,T0_Date,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
 
-    # today_retail_df = today_retail_df.to_frame().T
+    today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df.fillna(0)
 
@@ -393,7 +393,7 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
     
-    # today_retail_df = today_retail_df.to_frame().T
+    today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df[['客户经理姓名','协同外拓网点','其中本人\nA款授信（户）','其中本人\nB款授信（户）']]
     
@@ -434,20 +434,20 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
 
 
-XY_Dai_Zong_Shou_Xin_result=XY_Dai_Zong_Shou_Xin(data_path,yesterday_daily_report,
-department_list,client_manager_data,T0_Date,result_path)
+# XY_Dai_Zong_Shou_Xin_result=XY_Dai_Zong_Shou_Xin(data_path,yesterday_daily_report,
+# department_list,client_manager_data,T0_Date,result_path)
 
 
-XY_Dai_Fang_Kuang_result=XY_Dai_Fang_Kuang(data_path,yesterday_daily_report,
-department_list,client_manager_data,T0_Date,type_B_data,result_path)
+# XY_Dai_Fang_Kuang_result=XY_Dai_Fang_Kuang(data_path,yesterday_daily_report,
+# department_list,client_manager_data,T0_Date,type_B_data,result_path)
 
-B_Kuang_Shou_Xin_result=B_Kuang_Shou_Xin(data_path,yesterday_daily_report,
-department_list,client_manager_data,T0_Date,type_B_data,result_path)
+# B_Kuang_Shou_Xin_result=B_Kuang_Shou_Xin(data_path,yesterday_daily_report,
+# department_list,client_manager_data,T0_Date,type_B_data,result_path)
 
 
-total=pd.concat([XY_Dai_Zong_Shou_Xin_result,XY_Dai_Fang_Kuang_result,B_Kuang_Shou_Xin_result],axis=1)
+# total=pd.concat([XY_Dai_Zong_Shou_Xin_result,XY_Dai_Fang_Kuang_result,B_Kuang_Shou_Xin_result],axis=1)
 
-total.to_excel(result_path+'\\'+'日报总表.xlsx')
+# total.to_excel(result_path+'\\'+'日报总表.xlsx')
 
 
 #零售团队月度日报
@@ -649,7 +649,7 @@ department_list,client_manager_data,T0_Date,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
 
-    # today_retail_df = today_retail_df.to_frame().T
+    today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df.fillna(0)
 
@@ -692,7 +692,7 @@ department_list,client_manager_data,T0_Date,result_path):
     
     netural_result = netural_df_filtered['jingdiaokehujingli'].value_counts().reset_index()
 
-    netural_result=netural_result.set_index('index',drop=True)
+    netural_result=netural_result.set_index('jingdiaokehujingli',drop=True)
 
     netural_result.columns=['鑫e贷总授信（A/B款）_自然流量']
 
@@ -817,7 +817,7 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
 
-    # today_retail_df = today_retail_df.to_frame().T
+    today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df.fillna(0)
 
