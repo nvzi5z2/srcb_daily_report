@@ -13,16 +13,16 @@ data_path=r'D:\srcb_daily_report\原始数据'
 department_list='员工部门归属表.xlsx'
 
 #昨日日报表文件名
-yesterday_daily_report='网点鑫e贷月度指标完成情况1229.xlsx'
+yesterday_daily_report='网点鑫e贷月度指标完成情况1230.xlsx'
 
-yesterday_team_report='团队非按揭业绩日报1227.xlsx'
+yesterday_team_report='团队非按揭业绩日报1230.xlsx'
 
 #【浦东分行鑫e贷】客户经理营销数据文件名
-client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2024-12-29.xlsx'
+client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2024-12-30.xlsx'
 
 retail_performance_data='零售市场部协同外拓及理财转介业绩报送-10.xlsx'
 
-type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-29.xlsx'
+type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2024-12-30.xlsx'
 
 T0_Date='2024-12-27'
 
@@ -467,7 +467,7 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
     index = yesterday_daily_report_df.iloc[1:, 1:2].dropna()  # 假设这是你提取出来的列数据
     index_list = index.squeeze().tolist()  # 将提取出的列转换为列表
 
-    daily_report=yesterday_daily_report_df.iloc[1:21, 2:33]
+    daily_report=yesterday_daily_report_df.iloc[1:21, 2:32]
 
     daily_report.index=index_list
 
@@ -475,7 +475,7 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     daily_report=daily_report.drop('合计')
 
-    daily_report=daily_report.iloc[:,5:]
+    daily_report=daily_report.iloc[:,4:]
 
     #第一个结果（指标）提取昨日报表指标列
     kpi=daily_report[['指标']]
@@ -593,7 +593,7 @@ department_list,client_manager_data,T0_Date,result_path):
     index = yesterday_daily_report_df.iloc[1:, 1:2].dropna()  # 假设这是你提取出来的列数据
     index_list = index.squeeze().tolist()  # 将提取出的列转换为列表
 
-    daily_report=yesterday_daily_report_df.iloc[1:21, 2:33]
+    daily_report=yesterday_daily_report_df.iloc[1:21, 2:32]
 
     daily_report.index=index_list
 
@@ -601,7 +601,7 @@ department_list,client_manager_data,T0_Date,result_path):
 
     daily_report=daily_report.drop('合计')
 
-    daily_report=daily_report.iloc[:,5:]
+    daily_report=daily_report.iloc[:,4:]
 
     #第一个结果（指标）提取昨日报表指标列
     kpi=daily_report[['指标']]
@@ -750,7 +750,7 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
     index = yesterday_daily_report_df.iloc[1:, 1:2].dropna()  # 假设这是你提取出来的列数据
     index_list = index.squeeze().tolist()  # 将提取出的列转换为列表
 
-    daily_report=yesterday_daily_report_df.iloc[1:21, 2:33]
+    daily_report=yesterday_daily_report_df.iloc[1:21, 2:32]
 
     daily_report.index=index_list
 
@@ -758,7 +758,7 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     daily_report=daily_report.drop('合计')
 
-    daily_report=daily_report.iloc[:,5:]
+    daily_report=daily_report.iloc[:,4:]
 
     #第一个结果（指标）提取昨日报表指标列
     kpi=daily_report[['指标']]
@@ -886,7 +886,7 @@ def WM_Bussiness_Number_Team(data_path,yesterday_team_report,retail_performance_
     index = yesterday_daily_report_df.iloc[1:, 1:2].dropna()  # 假设这是你提取出来的列数据
     index_list = index.squeeze().tolist()  # 将提取出的列转换为列表
 
-    daily_report=yesterday_daily_report_df.iloc[1:21, 2:33]
+    daily_report=yesterday_daily_report_df.iloc[1:21, 2:32]
 
     daily_report.index=index_list
 
@@ -894,7 +894,7 @@ def WM_Bussiness_Number_Team(data_path,yesterday_team_report,retail_performance_
 
     daily_report=daily_report.drop('合计')
 
-    daily_report=daily_report.iloc[:,5:]
+    daily_report=daily_report.iloc[:,4:]
 
     #第一个结果（指标）提取昨日报表指标列
     kpi=daily_report[['指标']]
