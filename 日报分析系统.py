@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 
 #数据路径设置
 
-result_path=r'D:\srcb_daily_report\result'
+result_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\result'
 
-data_path=r'D:\srcb_daily_report\原始数据'
+data_path=r'C:\Users\Wesle\Desktop\srcb_daily_report\原始数据'
 
 #部门归属表文件名
 department_list='员工部门归属表.xlsx'
@@ -109,7 +109,7 @@ department_list,client_manager_data,T0_Date,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
 
-    today_retail_df = today_retail_df.to_frame().T
+    # today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df.fillna(0)
 
@@ -393,7 +393,7 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
     
-    today_retail_df = today_retail_df.to_frame().T
+    # today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df[['客户经理姓名','协同外拓网点','其中本人\nA款授信（户）','其中本人\nB款授信（户）']]
     
@@ -434,20 +434,20 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
 
 
-# XY_Dai_Zong_Shou_Xin_result=XY_Dai_Zong_Shou_Xin(data_path,yesterday_daily_report,
-# department_list,client_manager_data,T0_Date,result_path)
+XY_Dai_Zong_Shou_Xin_result=XY_Dai_Zong_Shou_Xin(data_path,yesterday_daily_report,
+department_list,client_manager_data,T0_Date,result_path)
 
 
-# XY_Dai_Fang_Kuang_result=XY_Dai_Fang_Kuang(data_path,yesterday_daily_report,
-# department_list,client_manager_data,T0_Date,type_B_data,result_path)
+XY_Dai_Fang_Kuang_result=XY_Dai_Fang_Kuang(data_path,yesterday_daily_report,
+department_list,client_manager_data,T0_Date,type_B_data,result_path)
 
-# B_Kuang_Shou_Xin_result=B_Kuang_Shou_Xin(data_path,yesterday_daily_report,
-# department_list,client_manager_data,T0_Date,type_B_data,result_path)
+B_Kuang_Shou_Xin_result=B_Kuang_Shou_Xin(data_path,yesterday_daily_report,
+department_list,client_manager_data,T0_Date,type_B_data,result_path)
 
 
-# total=pd.concat([XY_Dai_Zong_Shou_Xin_result,XY_Dai_Fang_Kuang_result,B_Kuang_Shou_Xin_result],axis=1)
+total=pd.concat([XY_Dai_Zong_Shou_Xin_result,XY_Dai_Fang_Kuang_result,B_Kuang_Shou_Xin_result],axis=1)
 
-# total.to_excel(result_path+'\\'+'日报总表.xlsx')
+total.to_excel(result_path+'\\'+'日报总表.xlsx')
 
 
 #零售团队月度日报
@@ -649,7 +649,7 @@ department_list,client_manager_data,T0_Date,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
 
-    today_retail_df = today_retail_df.to_frame().T
+    # today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df.fillna(0)
 
@@ -817,7 +817,7 @@ department_list,client_manager_data,T0_Date,type_B_data,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
 
-    today_retail_df = today_retail_df.to_frame().T
+    # today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df.fillna(0)
 
