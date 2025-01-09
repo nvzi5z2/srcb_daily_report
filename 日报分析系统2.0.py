@@ -13,16 +13,16 @@ data_path=r'D:\srcb_daily_report\原始数据'
 department_list='员工部门归属表.xlsx'
 
 #昨日日报表文件名
-yesterday_daily_report='网点非按揭日报-0107.xlsx'
+yesterday_daily_report='网点非按揭日报-0108.xlsx'
 
 yesterday_team_report='团队非按揭业绩日报0103.xlsx'
 
 #【浦东分行鑫e贷】客户经理营销数据文件名
-client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2025-01-07.xlsx'
+client_manager_data='【浦东分行鑫e贷】客户经理营销数据_2025-01-08.xlsx'
 
-retail_performance_data='零售市场部协同外拓及理财转介业绩报送-1.xlsx'
+retail_performance_data='零售市场部协同外拓及理财转介业绩报送-2.xlsx'
 
-type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2025-01-07.xlsx'
+type_B_data='【浦东分行鑫e贷】鑫e贷b款明细_2025-01-08.xlsx'
 
 T0_Date='2025-01-08'
 
@@ -109,7 +109,7 @@ department_list,client_manager_data,T0_Date,result_path):
 
     today_retail_df=retail_performance_df.loc[T0_Date,:]
 
-    today_retail_df = today_retail_df.to_frame().T
+    # today_retail_df = today_retail_df.to_frame().T
 
     today_retail_df=today_retail_df.fillna(0)
 
